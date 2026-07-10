@@ -1,5 +1,7 @@
 # Local AI Chat Room
 
+[English](README.md) | [中文](README_CN.md)
+
 A Flask-based AI chat application with Ollama integration, Bing search capabilities, and GPU monitoring.
 
 ## Features
