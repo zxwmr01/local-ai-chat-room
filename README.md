@@ -113,7 +113,7 @@ local-ai-chat-room/
 
 ## License
 
-MIT License
+[MIT License](LICENSE)
 
 ## Contributing
 
