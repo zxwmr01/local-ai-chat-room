@@ -965,11 +965,13 @@ a:active {
             <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()">☰</button>
             <h1 id="chat-title">AI Assistant</h1>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="model-selector-button" id="lang-selector-button" onclick="toggleLangDropdown()" style="background: var(--btn-secondary); color: var(--text-primary);">
-                    <span id="current-lang-name">EN</span>
-                    <span class="arrow">▼</span>
-                </button>
-                <div class="model-dropdown" id="lang-dropdown" style="min-width: 100px;"></div>
+                <div class="model-selector-container">
+                    <button class="model-selector-button" id="lang-selector-button" onclick="toggleLangDropdown()" style="background: var(--btn-secondary); color: var(--text-primary);">
+                        <span id="current-lang-name">EN</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="model-dropdown" id="lang-dropdown" style="min-width: 100px;"></div>
+                </div>
                 <div class="model-selector-container">
                     <div class="model-selector-button" id="model-selector-button" onclick="toggleModelDropdown()">
                         <span id="current-model-name">Loading...</span>
@@ -1177,9 +1179,15 @@ a:active {
     }
     
     document.addEventListener('click', function(event) {
-        const container = document.querySelector('.model-selector-container');
-        if (container && !container.contains(event.target)) {
+        const modelContainer = document.querySelector('.model-selector-container:last-child');
+        const langContainer = document.querySelector('.model-selector-container:first-child');
+        
+        if (modelContainer && !modelContainer.contains(event.target)) {
             closeModelDropdown();
+        }
+        
+        if (langContainer && !langContainer.contains(event.target)) {
+            closeLangDropdown();
         }
     });
     
@@ -1333,13 +1341,6 @@ a:active {
         langDropdown.classList.remove('open');
         langSelectorButton.classList.remove('open');
     }
-    
-    document.addEventListener('click', function(event) {
-        const langContainer = document.getElementById('lang-selector-button').parentElement;
-        if (langContainer && !langContainer.contains(event.target)) {
-            closeLangDropdown();
-        }
-    });
     
     async function selectLanguage(langCode) {
         if (langCode === currentLanguage) return;
