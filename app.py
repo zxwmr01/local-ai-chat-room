@@ -108,10 +108,10 @@ def get_ollama_models() -> dict:
     }
 
 
-AVAILABLE_MODELS = get_ollama_models()
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+AVAILABLE_MODELS = get_ollama_models()
 
 
 LANG_EN = {
