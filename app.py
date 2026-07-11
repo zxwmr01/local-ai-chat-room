@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Local AI Chat Room - Open Source Edition
+Ollama Flask Webui
 A Flask-based AI chat application with Ollama integration,
 Bing search capabilities, and GPU monitoring.
 
@@ -1013,7 +1013,7 @@ if __name__ == '__main__':
     DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
     print("=" * 60)
-    print("Local AI Chat Room - Open Source Edition")
+    print("Ollama Flask Webui")
     print("=" * 60)
     print(f"Host: {HOST}")
     print(f"Port: {PORT}")
