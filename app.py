@@ -70,29 +70,65 @@ def detect_thinking_format(model_name: str) -> str:
 
 def get_ollama_models() -> dict:
     """Fetch available models from Ollama API"""
-    try:
-        response = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=5)
-        if response.status_code == 200:
-            data = response.json()
-            models = {}
-            for model_info in data.get('models', []):
-                name = model_info.get('name', '')
-                model_name = name.split(':')[0] if ':' in name else name
-                
-                thinking_format = detect_thinking_format(name)
-                
-                models[name] = {
-                    "name": model_name,
-                    "description": model_info.get('details', {}).get('model', name),
-                    "thinking_format": thinking_format,
-                    "size": model_info.get('details', {}).get('size', 0),
-                    "modified_at": model_info.get('modified_at', '')
-                }
-            
-            if models:
-                return models
-    except Exception as e:
-        logger.warning(f"Failed to fetch Ollama models: {e}")
+    models = {}
+    
+    def try_api_tags():
+        try:
+            response = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                result = {}
+                for model_info in data.get('models', []):
+                    name = model_info.get('name', '')
+                    model_name = name.split(':')[0] if ':' in name else name
+                    
+                    thinking_format = detect_thinking_format(name)
+                    
+                    result[name] = {
+                        "name": model_name,
+                        "description": model_info.get('details', {}).get('model', name),
+                        "thinking_format": thinking_format,
+                        "size": model_info.get('details', {}).get('size', 0),
+                        "modified_at": model_info.get('modified_at', '')
+                    }
+                return result if result else None
+        except Exception as e:
+            logger.debug(f"Failed to fetch from /api/tags: {e}")
+        return None
+    
+    def try_v1_models():
+        try:
+            response = requests.get(f"{OLLAMA_HOST}/v1/models", timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                result = {}
+                for model_info in data.get('data', []):
+                    name = model_info.get('id', '')
+                    model_name = name.split(':')[0] if ':' in name else name
+                    
+                    thinking_format = detect_thinking_format(name)
+                    
+                    result[name] = {
+                        "name": model_name,
+                        "description": model_info.get('name', name),
+                        "thinking_format": thinking_format,
+                        "size": 0,
+                        "modified_at": ''
+                    }
+                return result if result else None
+        except Exception as e:
+            logger.debug(f"Failed to fetch from /v1/models: {e}")
+        return None
+    
+    models = try_api_tags()
+    if models:
+        return models
+    
+    models = try_v1_models()
+    if models:
+        return models
+    
+    logger.warning("Failed to fetch Ollama models from both /api/tags and /v1/models, using defaults")
     
     return {
         "deepseek-r1:1.5b": {
@@ -106,7 +142,7 @@ def get_ollama_models() -> dict:
             "thinking_format": "qwen"
         }
     }
-
+    
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
