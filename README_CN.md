@@ -124,3 +124,4 @@ local-ai-chat-room/
 - [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/) - HTML 解析
 - [Highlight.js](https://highlightjs.org/) - 代码高亮
 - [Marked](https://marked.js.org/) - Markdown 解析
+- [Trae CN](https://www.trae.cn/) - 编码助手
